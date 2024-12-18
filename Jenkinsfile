@@ -1,6 +1,7 @@
 pipeline {
     agent any
         tools {
+        git 'Default Git'
         maven 'Maven 3.8.1' // Remplacez par la version de Maven installée sur Jenkins
         jdk 'JDK 17'        // Remplacez par la version de JDK installée sur Jenkins
     }
