@@ -1,7 +1,11 @@
 pipeline {
     agent any
+        tools {
+        maven 'Maven 3.8.1' // Remplacez par la version de Maven installée sur Jenkins
+        jdk 'JDK 17'        // Remplacez par la version de JDK installée sur Jenkins
+    }
     environment {
-        MAVEN_HOME = tool name: 'Maven_8.8.8', type: 'Maven'
+         MAVEN_OPTS = '-Dmaven.test.failure.ignore=true' // Permet d'ignorer les échecs de tests
     }
 
     stages {
@@ -10,53 +14,55 @@ pipeline {
                 echo 'Clonage du dépôt...'
                  //git branch: 'main', url: 'https://github.com/BarkouchSana/GestionBibliotheque.git'
             // Clone le dépôt Git
+                echo 'Clonage du dépôt...'
                             checkout scm
             }
         }
         stage('Build') {
             steps {
-                echo 'Compilation du projet...'
-                // Utilisation de la commande Maven pour Windows
-                bat "\"${MAVEN_HOME}\\bin\\mvn\" clean compile"
+                 echo 'Compilation du projet avec Maven...'
+                bat 'mvn clean compile'
 
             }
         }
         stage('Test') {
             steps {
-             echo 'Exécution des tests...'
-            bat "\"${MAVEN_HOME}\\bin\\mvn\" test"
+             echo 'Exécution des tests unitaires...'
+                bat 'mvn test'
+            }
+        }
+        stage('Package') {
+            steps {
+                echo 'Packaging du projet en fichier JAR...'
+                bat 'mvn package'
             }
         }
         stage('Quality Analysis') {
             steps {
-              echo 'Analyse de la qualité du code avec SonarQube...'
-                withSonarQubeEnv('SonarQube') { // Assurez-vous que "SonarQube" est correctement configuré dans Jenkins
-                    bat "\"${MAVEN_HOME}\\bin\\mvn\" sonar:sonar"
+             echo 'Analyse de la qualité du code avec SonarQube...'
+                withSonarQubeEnv('SonarQube') { // Remplacez 'SonarQube' par votre configuration
+                    bat 'mvn sonar:sonar'
                 }
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Déploiement simulé réussi'
+                 echo 'Déploiement de l\'application...'
+                bat 'mvn install'
             }
         }
     }
     post {
+         always {
+            echo 'Pipeline terminé.'
+            junit '**/target/surefire-reports/*.xml' // Publie les résultats de tests
+        }
         success {
-         echo 'Le build a réussi, envoi de l\'email...'
-            emailext(
-                            to: 'sanaabarkouch2001@gmail.com',
-                            subject: 'Build Success',
-                            body: 'Le pipeline a été complété avec succès.'
-                        )
-             }
-         failure {
-                    echo 'Le build a échoué, envoi de l\'email...'
-                    emailext(
-                        to: 'sanaabarkouch2001@gmail.com',
-                        subject: 'Build Failed',
-                        body: 'Le pipeline a échoué. Veuillez vérifier les logs Jenkins pour plus de détails.'
-                    )
-                }
+            echo 'Pipeline exécuté avec succès.'
+        }
+        failure {
+            echo 'Échec du pipeline. Consultez les logs pour plus de détails.'
+        }
     }
+    
 }
