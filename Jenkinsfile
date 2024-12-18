@@ -59,11 +59,17 @@ pipeline {
             junit '**/target/surefire-reports/*.xml' // Publie les résultats de tests
         }
         success {
-            echo 'Pipeline exécuté avec succès.'
+            emailext to: 'sanabarkouch@gmail.com',
+                subject: 'Build Success',
+                body: 'Le build a été complété avec succès.'
         }
         failure {
-            echo 'Échec du pipeline. Consultez les logs pour plus de détails.'
+            emailext to: 'sanabarkouch@gmail.com',
+                subject: 'Build Failed',
+                body: 'Le build a échoué.'
         }
+
+       
     }
     
 }
