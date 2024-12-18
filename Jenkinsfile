@@ -47,6 +47,7 @@ pipeline {
                             subject: 'Build Success',
                             body: 'Le pipeline a été complété avec succès.'
                         )
+             }
          failure {
                     echo 'Le build a échoué, envoi de l\'email...'
                     emailext(
