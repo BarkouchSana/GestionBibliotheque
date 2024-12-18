@@ -17,10 +17,8 @@ pipeline {
             steps {
                 echo 'Compilation du projet...'
                 // Utilisation de la commande Maven pour Windows
-                dir('GestionBibliothequePipeline') {
-                    bat "mvn clen compile"
-                }
-                // bat "\"${MAVEN_HOME}\\bin\\mvn\" clean compile"
+               
+               bat "\"${MAVEN_HOME}\\bin\\mvn\" clean compile"
 
             }
         }
