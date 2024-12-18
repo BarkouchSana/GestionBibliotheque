@@ -12,10 +12,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Clonage du dépôt...'
+                //echo 'Clonage du dépôt...'
                  //git branch: 'main', url: 'https://github.com/BarkouchSana/GestionBibliotheque.git'
             // Clone le dépôt Git
-                echo 'Clonage du dépôt...'
+                echo 'Clonage du projet...'
                             checkout scm
             }
         }
