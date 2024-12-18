@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        MAVEN_HOME = tool 'Maven_3.8.8'
+        MAVEN_HOME = tool 'Maven_3.8.8', type: 'Maven'
     }
 
     stages {
@@ -16,7 +16,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compilation du projet...'
-                bat '"${MAVEN_HOME}/bin/mvn" clean compile'
+                bat "${MAVEN_HOME}/bin/mvn clean compile"
+
             }
         }
         stage('Test') {
