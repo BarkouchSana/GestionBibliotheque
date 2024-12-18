@@ -1,28 +1,35 @@
 pipeline {
     agent any
     environment {
-        MAVEN_HOME = tool 'Maven'
+        MAVEN_HOME = tool 'Maven_3.8.8'
     }
+
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/votre-depot/GestionBibliotheque.git'
+                echo 'Clonage du dépôt...'
+                git url: 'https://github.com/BarkouchSana/GestionBibliotheque.git'
+            // Clone le dépôt Git
+                            //checkout scm
             }
         }
         stage('Build') {
             steps {
-                sh '${MAVEN_HOME}/bin/mvn clean compile'
+                echo 'Compilation du projet...'
+                bat '"${MAVEN_HOME}\\bin\\mvn" clean compile'
             }
         }
         stage('Test') {
             steps {
-                sh '${MAVEN_HOME}/bin/mvn test'
+              echo 'Exécution des tests...'
+              bat '"${MAVEN_HOME}\\bin\\mvn" test'
             }
         }
         stage('Quality Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '${MAVEN_HOME}/bin/mvn sonar:sonar'
+               echo 'Analyse de la qualité du code avec SonarQube...'
+                              withSonarQubeEnv('SonarQube') { // Assurez-vous que "SonarQube" est correctement configuré dans Jenkins
+                                  bat '"${MAVEN_HOME}\\bin\\mvn" sonar:sonar'
                 }
             }
         }
@@ -34,14 +41,19 @@ pipeline {
     }
     post {
         success {
-            emailext to: 'votre-email@example.com',
-                subject: 'Build Success',
-                body: 'Le build a été complété avec succès.'
-        }
-        failure {
-            emailext to: 'votre-email@example.com',
-                subject: 'Build Failed',
-                body: 'Le build a échoué.'
-        }
+         echo 'Le build a réussi, envoi de l\'email...'
+            emailext(
+                            to: 'sanaabarkouch2001@gmail.com',
+                            subject: 'Build Success',
+                            body: 'Le pipeline a été complété avec succès.'
+                        )
+         failure {
+                    echo 'Le build a échoué, envoi de l\'email...'
+                    emailext(
+                        to: 'sanaabarkouch2001@gmail.com',
+                        subject: 'Build Failed',
+                        body: 'Le pipeline a échoué. Veuillez vérifier les logs Jenkins pour plus de détails.'
+                    )
+                }
     }
 }

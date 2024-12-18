@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mon-projet</a> &gt; <a href="index.source.html" class="el_package">com.library</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package com.library;
+
+import com.library.service.BorrowService;
+import com.library.service.BookService;
+import com.library.service.StudentService;
+import com.library.util.DbConnection;
+import com.library.model.Book;
+import com.library.model.Student;
+import com.library.model.Borrow;
+import com.library.dao.BookDAO;
+import com.library.dao.BorrowDAO;  // Importer BorrowDAO
+import com.library.dao.StudentDAO;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.Scanner;
+
+<span class="nc" id="L19">public class Main {</span>
+    public static void main(String[] args) throws SQLException {
+<span class="nc" id="L21">        Scanner scanner = new Scanner(System.in);</span>
+
+        // Création des services
+<span class="nc" id="L24">        BookDAO bookDAO = new BookDAO();</span>
+<span class="nc" id="L25">        StudentDAO studentDAO = new StudentDAO();</span>
+<span class="nc" id="L26">        BorrowDAO borrowDAO = new BorrowDAO();</span>
+
+<span class="nc" id="L28">        BookService bookService = new BookService(bookDAO);</span>
+ 
+<span class="nc" id="L30">        StudentService studentService = new StudentService(studentDAO);</span>
+    
+<span class="nc" id="L32">        BorrowService borrowService = new BorrowService();  // Passer BorrowDAO au constructeur de BorrowService</span>
+        
+         
+        
+<span class="nc" id="L36">        boolean running = true;</span>
+
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        while (running) {</span>
+<span class="nc" id="L39">            System.out.println(&quot;\n===== Menu =====&quot;);</span>
+<span class="nc" id="L40">            System.out.println(&quot;1. Ajouter un livre&quot;);</span>
+<span class="nc" id="L41">            System.out.println(&quot;2. Afficher les livres&quot;);</span>
+<span class="nc" id="L42">            System.out.println(&quot;3. Ajouter un étudiant&quot;);</span>
+<span class="nc" id="L43">            System.out.println(&quot;4. Afficher les étudiants&quot;);</span>
+<span class="nc" id="L44">            System.out.println(&quot;5. Emprunter un livre&quot;);</span>
+<span class="nc" id="L45">            System.out.println(&quot;6. Afficher les emprunts&quot;);</span>
+<span class="nc" id="L46">            System.out.println(&quot;7. Quitter&quot;);</span>
+
+<span class="nc" id="L48">            System.out.print(&quot;Choisir une option: &quot;);</span>
+<span class="nc" id="L49">            int choice = scanner.nextInt();</span>
+<span class="nc" id="L50">            scanner.nextLine();  // Consommer la ligne restante après l'entier</span>
+
+<span class="nc bnc" id="L52" title="All 8 branches missed.">            switch (choice) {</span>
+                case 1:
+<span class="nc" id="L54">                    System.out.print(&quot;Entrez le titre du livre: &quot;);</span>
+<span class="nc" id="L55">                    String title = scanner.nextLine();</span>
+<span class="nc" id="L56">                    System.out.print(&quot;Entrez l'auteur du livre: &quot;);</span>
+<span class="nc" id="L57">                    String author = scanner.nextLine();</span>
+<span class="nc" id="L58">                    System.out.print(&quot;Entrez le publisher du livre: &quot;);</span>
+<span class="nc" id="L59">                    String publisher = scanner.nextLine();</span>
+<span class="nc" id="L60">                    System.out.print(&quot;Entrez l'annee du livre: &quot;);</span>
+<span class="nc" id="L61">                    int annee = scanner.nextInt();</span>
+<span class="nc" id="L62">                    Book book = new Book(title, author,publisher,annee, true);</span>
+<span class="nc" id="L63">                    bookService.addBook(book);</span>
+<span class="nc" id="L64">                    break;</span>
+
+                case 2:
+<span class="nc" id="L67">                    bookService.displayBooks();</span>
+<span class="nc" id="L68">                    break;</span>
+
+                case 3:
+<span class="nc" id="L71">                    System.out.print(&quot;Entrez le nom de l'étudiant: &quot;);</span>
+<span class="nc" id="L72">                    String studentName = scanner.nextLine();</span>
+
+<span class="nc" id="L74">                    System.out.print(&quot;Entrez email de l'étudiant: &quot;);</span>
+<span class="nc" id="L75">                    String studentEmail = scanner.nextLine();</span>
+
+
+<span class="nc" id="L78">                    Student student = new Student(studentName,studentEmail);</span>
+<span class="nc" id="L79">                    studentService.addStudent(student);</span>
+<span class="nc" id="L80">                    break;</span>
+
+                case 4:
+<span class="nc" id="L83">                    studentService.displayStudents();</span>
+<span class="nc" id="L84">                    break;</span>
+
+                case 5:
+<span class="nc" id="L87">                    System.out.print(&quot;Entrez l'ID de l'étudiant: &quot;);</span>
+<span class="nc" id="L88">                    int studentId = scanner.nextInt();</span>
+<span class="nc" id="L89">                    System.out.print(&quot;Entrez l'ID du livre: &quot;);</span>
+<span class="nc" id="L90">                    int bookId = scanner.nextInt();</span>
+<span class="nc" id="L91">                    Student studentForBorrow = studentService.findStudentById(studentId);</span>
+<span class="nc" id="L92">                    Book bookForBorrow = bookService.findBookById(bookId);</span>
+<span class="nc bnc" id="L93" title="All 4 branches missed.">                    if (studentForBorrow != null &amp;&amp; bookForBorrow != null) {</span>
+                        // Créer un objet Borrow avec les informations nécessaires
+<span class="nc" id="L95">                        Borrow borrow = new Borrow(studentForBorrow,bookForBorrow, new Date(), null);</span>
+<span class="nc" id="L96">                        borrowService.borrowBook(borrow);  // Appel de la méthode avec l'objet Borrow</span>
+<span class="nc" id="L97">                    } else {</span>
+<span class="nc" id="L98">                        System.out.println(&quot;Étudiant ou livre introuvable.&quot;);</span>
+                    }
+<span class="nc" id="L100">                    break;</span>
+
+                case 6:
+<span class="nc" id="L103">                    borrowService.displayBorrows();</span>
+<span class="nc" id="L104">                    break;</span>
+
+                case 7:
+<span class="nc" id="L107">                    running = false;</span>
+<span class="nc" id="L108">                    System.out.println(&quot;Au revoir!&quot;);</span>
+<span class="nc" id="L109">                    break;</span>
+
+                default:
+<span class="nc" id="L112">                    System.out.println(&quot;Option invalide.&quot;);</span>
+            }
+<span class="nc" id="L114">        }</span>
+
+<span class="nc" id="L116">        scanner.close();</span>
+<span class="nc" id="L117">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BorrowDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mon-projet</a> &gt; <a href="index.source.html" class="el_package">com.library.dao</a> &gt; <span class="el_source">BorrowDAO.java</span></div><h1>BorrowDAO.java</h1><pre class="source lang-java linenums">//
+//package com.library.dao;
+//
+//import com.library.model.Book;
+//import com.library.model.Borrow;
+//import com.library.model.Student;
+//import com.library.util.DbConnection;
+//
+//import java.sql.*;
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//public class BorrowDAO {
+//
+//    // Assuming you have a data source or a connection method
+//    private Connection connection;
+//
+//    public BorrowDAO() throws SQLException {
+//        // Initialize your connection, for example:
+//        connection = DbConnection.getConnection(); // Replace with your actual connection
+//    }
+//    public Borrow getBorrowById(int borrowId) {
+//        Borrow borrow = null;
+//        String query = &quot;SELECT * FROM borrows WHERE borrow_id = ?&quot;; // Adjust to your table schema
+//
+//        try (PreparedStatement statement = connection.prepareStatement(query)) {
+//            statement.setInt(1, borrowId);
+//            ResultSet resultSet = statement.executeQuery();
+//
+//            if (resultSet.next()) {
+//                // Retrieve data from the result set and map it to the Borrow object
+//                int id = resultSet.getInt(&quot;borrow_id&quot;);
+//                Student student = new Student(resultSet.getInt(&quot;student_id&quot;), resultSet.getString(&quot;student_name&quot;), resultSet.getString(&quot;student_email&quot;));
+//                Book book = new Book(resultSet.getInt(&quot;book_id&quot;), resultSet.getString(&quot;book_title&quot;), resultSet.getString(&quot;book_author&quot;), resultSet.getString(&quot;publisher&quot;),resultSet.getInt(&quot;year&quot;), resultSet.getBoolean(&quot;is_available&quot;));
+//                Date borrowDate = resultSet.getDate(&quot;borrow_date&quot;);
+//                Date returnDate = resultSet.getDate(&quot;return_date&quot;);
+//
+//                borrow = new Borrow(id, student, book, borrowDate, returnDate);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace(); // Handle the exception properly
+//        }
+//
+//        return borrow;
+//    }
+//    public List&lt;Borrow&gt; getAllBorrows() throws SQLException {
+//        List&lt;Borrow&gt; borrows = new ArrayList&lt;&gt;();
+//        String query = &quot;SELECT * FROM borrows&quot;;
+//        try (Connection connection = DbConnection.getConnection();
+//             Statement stmt = connection.createStatement();
+//             ResultSet rs = stmt.executeQuery(query)) {
+//            while (rs.next()) {
+//                Borrow borrow = new Borrow(rs.getInt(&quot;id&quot;),
+//                        new Student(rs.getInt(&quot;student_id&quot;), &quot;Student Name&quot;, &quot;student@example.com&quot;),
+//                        new Book(rs.getInt(&quot;book_id&quot;), &quot;Book Title&quot;, &quot;Author&quot;, true),
+//                        rs.getDate(&quot;borrow_date&quot;), rs.getDate(&quot;return_date&quot;));
+//                borrows.add(borrow);
+//            }
+//        }
+//        return borrows;
+//    }
+//
+//public void save(Borrow borrow) {
+//    String query = &quot;INSERT INTO borrows (student_id, book_id, borrow_date, return_date) VALUES (?, ?, ?, ?)&quot;;
+//
+//    try (Connection connection = DbConnection.getConnection();
+//         PreparedStatement stmt = connection.prepareStatement(query)) {
+//
+//        stmt.setInt(1, borrow.getStudent().getId());
+//        stmt.setInt(2, borrow.getBook().getId());
+//        stmt.setDate(3, new java.sql.Date(borrow.getBorrowDate().getTime()));
+//        stmt.setDate(4, borrow.getReturnDate() != null ? new java.sql.Date(borrow.getReturnDate().getTime()) : null);
+//
+//        stmt.executeUpdate();
+//    } catch (SQLException e) {
+//        e.printStackTrace();
+//    }
+//}
+//
+//
+//    public void updateBorrow(Borrow borrow) throws SQLException {
+//        String query = &quot;UPDATE borrows SET student_id=?, book_id=?, borrow_date=?, return_date=? WHERE id=?&quot;;
+//        try (Connection connection = DbConnection.getConnection();
+//             PreparedStatement stmt = connection.prepareStatement(query)) {
+//            stmt.setInt(1, borrow.getStudent().getId());
+//            stmt.setInt(2, borrow.getBook().getId());
+//            stmt.setDate(3, new Date(borrow.getBorrowDate().getTime()));
+//            stmt.setDate(4, new Date(borrow.getReturnDate().getTime()));
+//            stmt.setInt(5, borrow.getId());
+//            stmt.executeUpdate();
+//        }
+//    }
+//
+//    public void deleteBorrow(int id) throws SQLException {
+//        String query = &quot;DELETE FROM borrows WHERE id=?&quot;;
+//        try (Connection connection = DbConnection.getConnection();
+//             PreparedStatement stmt = connection.prepareStatement(query)) {
+//            stmt.setInt(1, id);
+//            stmt.executeUpdate();
+//        }
+//    }
+//    public void addBorrow(Borrow borrow) {
+//        save(borrow);
+//    }
+//
+//
+//}
+package com.library.dao;
+
+import com.library.model.Book;
+import com.library.model.Borrow;
+import com.library.model.Student;
+import com.library.util.DbConnection;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class BorrowDAO {
+
+    private final Connection connection;
+
+<span class="fc" id="L123">    public BorrowDAO() throws SQLException {</span>
+<span class="fc" id="L124">        connection = DbConnection.getConnection(); // Initialize the database connection</span>
+<span class="fc" id="L125">    }</span>
+
+    public Borrow getBorrowById(int borrowId) {
+<span class="nc" id="L128">        Borrow borrow = null;</span>
+<span class="nc" id="L129">        String query = &quot;SELECT * FROM borrows WHERE id = ?&quot;;</span>
+<span class="nc" id="L130">        try (PreparedStatement statement = connection.prepareStatement(query)) {</span>
+<span class="nc" id="L131">            statement.setInt(1, borrowId);</span>
+<span class="nc" id="L132">            try (ResultSet resultSet = statement.executeQuery()) {</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">                if (resultSet.next()) {</span>
+<span class="nc" id="L134">                    borrow = mapBorrow(resultSet); // Map the result set to a Borrow object</span>
+                }
+            }
+<span class="nc" id="L137">        } catch (SQLException e) {</span>
+<span class="nc" id="L138">            System.err.println(&quot;Error fetching Borrow by ID: &quot; + e.getMessage());</span>
+<span class="nc" id="L139">        }</span>
+<span class="nc" id="L140">        return borrow;</span>
+    }
+
+    public List&lt;Borrow&gt; getAllBorrows() {
+<span class="nc" id="L144">        List&lt;Borrow&gt; borrows = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L145">        String query = &quot;SELECT * FROM borrows&quot;;</span>
+<span class="nc" id="L146">        try (Statement stmt = connection.createStatement();</span>
+<span class="nc" id="L147">             ResultSet rs = stmt.executeQuery(query)) {</span>
+<span class="nc bnc" id="L148" title="All 2 branches missed.">            while (rs.next()) {</span>
+<span class="nc" id="L149">                borrows.add(mapBorrow(rs));</span>
+            }
+<span class="nc" id="L151">        } catch (SQLException e) {</span>
+<span class="nc" id="L152">            System.err.println(&quot;Error fetching all Borrows: &quot; + e.getMessage());</span>
+<span class="nc" id="L153">        }</span>
+<span class="nc" id="L154">        return borrows;</span>
+    }
+
+    public void saveBorrow(Borrow borrow) {
+<span class="nc" id="L158">        String query = &quot;INSERT INTO borrows (student_id, book_id, borrow_date, return_date) VALUES (?, ?, ?, ?)&quot;;</span>
+<span class="nc" id="L159">        try (PreparedStatement stmt = connection.prepareStatement(query)) {</span>
+<span class="nc" id="L160">            stmt.setInt(1, borrow.getStudent().getId());</span>
+<span class="nc" id="L161">            stmt.setInt(2, borrow.getBook().getId());</span>
+<span class="nc" id="L162">            stmt.setDate(3, new java.sql.Date(borrow.getBorrowDate().getTime()));</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">            stmt.setDate(4, borrow.getReturnDate() != null ? new java.sql.Date(borrow.getReturnDate().getTime()) : null);</span>
+<span class="nc" id="L164">            stmt.executeUpdate();</span>
+<span class="nc" id="L165">        } catch (SQLException e) {</span>
+<span class="nc" id="L166">            System.err.println(&quot;Error saving Borrow: &quot; + e.getMessage());</span>
+<span class="nc" id="L167">        }</span>
+<span class="nc" id="L168">    }</span>
+
+    public void updateBorrow(Borrow borrow) {
+<span class="nc" id="L171">        String query = &quot;UPDATE borrows SET student_id = ?, book_id = ?, borrow_date = ?, return_date = ? WHERE id = ?&quot;;</span>
+<span class="nc" id="L172">        try (PreparedStatement stmt = connection.prepareStatement(query)) {</span>
+<span class="nc" id="L173">            stmt.setInt(1, borrow.getStudent().getId());</span>
+<span class="nc" id="L174">            stmt.setInt(2, borrow.getBook().getId());</span>
+<span class="nc" id="L175">            stmt.setDate(3, new java.sql.Date(borrow.getBorrowDate().getTime()));</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">            stmt.setDate(4, borrow.getReturnDate() != null ? new java.sql.Date(borrow.getReturnDate().getTime()) : null);</span>
+<span class="nc" id="L177">            stmt.setInt(5, borrow.getId());</span>
+<span class="nc" id="L178">            stmt.executeUpdate();</span>
+<span class="nc" id="L179">        } catch (SQLException e) {</span>
+<span class="nc" id="L180">            System.err.println(&quot;Error updating Borrow: &quot; + e.getMessage());</span>
+<span class="nc" id="L181">        }</span>
+<span class="nc" id="L182">    }</span>
+
+    public void deleteBorrow(int id) {
+<span class="nc" id="L185">        String query = &quot;DELETE FROM borrows WHERE id = ?&quot;;</span>
+<span class="nc" id="L186">        try (PreparedStatement stmt = connection.prepareStatement(query)) {</span>
+<span class="nc" id="L187">            stmt.setInt(1, id);</span>
+<span class="nc" id="L188">            stmt.executeUpdate();</span>
+<span class="nc" id="L189">        } catch (SQLException e) {</span>
+<span class="nc" id="L190">            System.err.println(&quot;Error deleting Borrow: &quot; + e.getMessage());</span>
+<span class="nc" id="L191">        }</span>
+<span class="nc" id="L192">    }</span>
+
+    private Borrow mapBorrow(ResultSet rs) throws SQLException {
+        // Récupération des données de la table &quot;borrows&quot;
+<span class="nc" id="L196">        int id = rs.getInt(&quot;borrow_id&quot;);</span>
+
+        // Création de l'objet Student à partir des données de la table
+<span class="nc" id="L199">        Student student = new Student(</span>
+
+<span class="nc" id="L201">                rs.getString(&quot;name&quot;),</span>
+<span class="nc" id="L202">                rs.getString(&quot;email&quot;)</span>
+        );
+
+        // Création de l'objet Book à partir des données de la table
+<span class="nc" id="L206">        Book book = new Book(</span>
+<span class="nc" id="L207">                rs.getInt(&quot;book_id&quot;),</span>
+<span class="nc" id="L208">                rs.getString(&quot;title&quot;),</span>
+<span class="nc" id="L209">                rs.getString(&quot;author&quot;),</span>
+<span class="nc" id="L210">                rs.getString(&quot;publisher&quot;),</span>
+<span class="nc" id="L211">                rs.getInt(&quot;year&quot;),</span>
+<span class="nc" id="L212">                rs.getBoolean(&quot;is_available&quot;)</span>
+        );
+
+        // Récupération des dates de prêt et de retour
+<span class="nc" id="L216">        Date borrowDate = rs.getDate(&quot;borrow_date&quot;);</span>
+<span class="nc" id="L217">        Date returnDate = rs.getDate(&quot;return_date&quot;);</span>
+
+        // Retour de l'objet Borrow construit
+<span class="nc" id="L220">        return new Borrow(id, student, book, borrowDate, returnDate);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

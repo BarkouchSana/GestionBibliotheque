@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">mon-projet</a> &gt; <a href="index.source.html" class="el_package">com.library.service</a> &gt; <span class="el_source">StudentService.java</span></div><h1>StudentService.java</h1><pre class="source lang-java linenums">package com.library.service;
+
+import com.library.dao.StudentDAO;
+import com.library.model.Student;
+
+import java.sql.SQLException;
+import java.util.List;
+
+public class StudentService {
+    private  StudentDAO studentDAO;
+    // Initialisation via constructeur
+<span class="fc" id="L12">    public StudentService(StudentDAO studentDAO) {</span>
+<span class="fc" id="L13">        this.studentDAO = studentDAO;</span>
+<span class="fc" id="L14">    }</span>
+
+    public Student findStudentById(int id) {
+<span class="fc" id="L17">        return studentDAO.findStudentById(id);</span>
+    }
+    /**
+     * Ajouter un nouvel étudiant.
+     * @param student L'étudiant à ajouter.
+     */
+
+    public void addStudent(Student student) {
+<span class="pc bpc" id="L25" title="2 of 6 branches missed.">        if (student == null || student.getName() == null || student.getEmail() == null) {</span>
+<span class="fc" id="L26">            throw new IllegalArgumentException(&quot;Les informations de l'étudiant sont incomplètes.&quot;);</span>
+        }
+<span class="fc" id="L28">        studentDAO.addStudent(student);</span>
+<span class="fc" id="L29">        System.out.println(&quot;Étudiant ajouté avec succès : &quot; + student);</span>
+<span class="fc" id="L30">    }</span>
+
+
+
+     /**
+     * Récupérer un étudiant par ID.
+     * @param id L'ID de l'étudiant.
+     * @return L'étudiant correspondant ou null si non trouvé.
+     */
+     public Student getStudentById(int id) {
+<span class="nc" id="L40">         return studentDAO.getStudentById(id);</span>
+     }
+
+    // Afficher tous les étudiants
+    public void displayStudents() {
+<span class="nc" id="L45">        List&lt;Student&gt; students = studentDAO.getAllStudents();</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (students.isEmpty()) {</span>
+<span class="nc" id="L47">            System.out.println(&quot;Aucun étudiant trouvé.&quot;);</span>
+        } else {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            for (Student student : students) {</span>
+<span class="nc" id="L50">                System.out.println(student);</span>
+<span class="nc" id="L51">            }</span>
+        }
+<span class="nc" id="L53">    }</span>
+    public List&lt;Student&gt; getAllStudents() {
+<span class="fc" id="L55">        return studentDAO.getAllStudents();</span>
+    }
+
+
+
+    public void updateStudent(Student student) {
+<span class="nc bnc" id="L61" title="All 4 branches missed.">        if (student != null &amp;&amp; student.getId() &gt; 0) {</span>
+<span class="nc" id="L62">            studentDAO.updateStudent(student);</span>
+<span class="nc" id="L63">            System.out.println(&quot;Étudiant mis à jour avec succès.&quot;);</span>
+        } else {
+<span class="nc" id="L65">            System.out.println(&quot;Informations invalides pour la mise à jour.&quot;);</span>
+        }
+<span class="nc" id="L67">    }</span>
+
+    public void deleteStudent(int id) {
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (id &gt; 0) {</span>
+<span class="nc" id="L71">            studentDAO.deleteStudent(id);</span>
+<span class="nc" id="L72">            System.out.println(&quot;Étudiant supprimé avec succès.&quot;);</span>
+        } else {
+<span class="nc" id="L74">            System.out.println(&quot;ID invalide pour la suppression.&quot;);</span>
+        }
+<span class="nc" id="L76">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
