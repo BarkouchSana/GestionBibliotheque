@@ -16,21 +16,22 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compilation du projet...'
-                bat '"${MAVEN_HOME}/bin/mvn" clean compile'
+                // Utilisation de la commande Maven pour Windows
+                bat "\"${MAVEN_HOME}\\bin\\mvn\" clean compile"
 
             }
         }
         stage('Test') {
             steps {
-              echo 'Exécution des tests...'
-              bat '"${MAVEN_HOME}/bin/mvn" test'
+             echo 'Exécution des tests...'
+            bat "\"${MAVEN_HOME}\\bin\\mvn\" test"
             }
         }
         stage('Quality Analysis') {
             steps {
-               echo 'Analyse de la qualité du code avec SonarQube...'
-                              withSonarQubeEnv('SonarQube') { // Assurez-vous que "SonarQube" est correctement configuré dans Jenkins
-                                  bat '"${MAVEN_HOME}/bin/mvn" sonar:sonar'
+              echo 'Analyse de la qualité du code avec SonarQube...'
+                withSonarQubeEnv('SonarQube') { // Assurez-vous que "SonarQube" est correctement configuré dans Jenkins
+                    bat "\"${MAVEN_HOME}\\bin\\mvn\" sonar:sonar"
                 }
             }
         }
