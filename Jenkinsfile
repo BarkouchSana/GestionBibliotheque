@@ -8,7 +8,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Clonage du dépôt...'
-                git url: 'https://github.com/BarkouchSana/GestionBibliotheque.git'
+                 git branch: 'main', url: 'https://github.com/BarkouchSana/GestionBibliotheque.git'
             // Clone le dépôt Git
                             //checkout scm
             }
