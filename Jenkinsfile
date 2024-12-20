@@ -5,15 +5,12 @@ pipeline {
         maven 'Maven 3.8.1' // Remplacez par la version de Maven installée sur Jenkins
         jdk 'JDK 17'        // Remplacez par la version de JDK installée sur Jenkins
     }
-    environment {
-         MAVEN_OPTS = '-Dmaven.test.failure.ignore=true' // Permet d'ignorer les échecs de tests
-    }
+ 
 
     stages {
         stage('Checkout') {
             steps {
-                //echo 'Clonage du dépôt...'
-                 //git branch: 'main', url: 'https://github.com/BarkouchSana/GestionBibliotheque.git'
+
             // Clone le dépôt Git
                 echo 'Clonage du projet...'
                             checkout scm
@@ -40,7 +37,7 @@ pipeline {
         }
         stage('Quality Analysis') {
             steps {
-             echo 'Analyse de la qualité du code avec SonarQube...'
+             echo 'Analyse de la qualite du code avec SonarQube...'
                 withSonarQubeEnv('SonarQube') { // Remplacez 'SonarQube' par votre configuration
                     bat 'mvn sonar:sonar'
                 }
@@ -48,8 +45,8 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                 echo 'Déploiement de l\'application...'
-                bat 'mvn install'
+             echo 'Déploiement simulé réussi'
+
             }
         }
     }
